@@ -6,21 +6,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 //ReadProperties readProperties;
@@ -35,20 +32,21 @@ public class FirstTestCase {
 	private WebDriver driver;
 	
 	@BeforeTest
-	public void setUp() throws MalformedURLException{
-		 new DesiredCapabilities();
-         URL serverurl = new URL("http://localhost:9515");
-         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-          
-         driver = new RemoteWebDriver(serverurl,capabilities);
-//		 System.setProperty("webdriver.chrome.driver", readProperties.getPropertyFromConfig("driverpath"));
-//		  driver=new ChromeDriver();
+	public void setUp(){
+		
+		ChromeOptions options = new ChromeOptions();
+		options.setBinary(readProperties.getPropertyFromConfig("driverpath"));
+		//options.setBinary("/usr/bin/google-chrome");
+		ChromeDriver driver = new ChromeDriver(options);
+
+		//System.setProperty("webdriver.chrome.driver", readProperties.getPropertyFromConfig("driverpath"));
+		//driver=new ChromeDriver();
 	}
 	
-	// @AfterTest
-	// public void QuitTest(){
-	// 	driver.quit();
-	// }
+	@AfterTest
+	public void QuitTest(){
+		driver.quit();
+	}
 	
   @Test(dataProvider="getData")
   public void test(String title,String fname,String lname,String mname,String email,String mobile,String address,String ftn,String excemption_Reason) throws InterruptedException {
@@ -63,7 +61,7 @@ public class FirstTestCase {
 		driver.findElement(By.id("age_test")).click();
 		driver.findElement(By.name("single")).click();
 		
-		Thread.sleep(4000);
+		Thread.sleep(3000);
 		
 		driver.findElement(By.id("title")).click();
 		driver.findElement(By.cssSelector("option[value='"+title+"']")).click();
@@ -82,7 +80,6 @@ public class FirstTestCase {
 		Thread.sleep(2000);
 
 		driver.findElement(By.name("email")).sendKeys(email);
-		Thread.sleep(2000);
 		driver.findElement(By.name("mobile")).sendKeys(mobile);
 
 		driver.findElement(By.name("contact_btn")).click();
